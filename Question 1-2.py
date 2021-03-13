@@ -7,3 +7,28 @@ r"""
            "Debian APT-HTTP/1.3 (0.9.7.9)"'
     parsed_raw = ('188.138.60.101', '17/May/2015:08:05:49 +0000', 'GET', '/downloads/product_2', '304', '0')
 """
+import re
+
+# ЧИТАЕМ СОДЕРЖИМОЕ ЛОГ-ФАЙЛА
+with open('nginx_logs.txt', 'r', encoding='utf-8') as f:
+    log_str = f.read()
+
+# ПАРСИМ
+# Линк на регулярку https://regex101.com/r/gDdBLg/1
+RE_PARSE = (r"^((?:(?:[0-9a-f]{0,4}:){1,7}(?:[0-9a-f]{0,4}))?(?::)?(?:(?:\d{1,3}\.){3}(?:\d{1,3}))?)"   # все виды IP
+            r".*\[(.+)].*\"([A-Z]+(?=\s))\s+(/.+?)\s.*?\"\s(\d+)\s(\d+).*$|^$")                         # всё остальное
+parse_lst = list(re.findall(RE_PARSE, log_str, re.MULTILINE))
+
+# ВЫВОДИМ РЕЗУЛЬТАТ
+print(*parse_lst, sep='\n')
+
+# ПРОВЕРКА НА НЕЗАХВАЧЕННЫЕ СТРОКИ
+log_lst = log_str.split('\n')
+print(f'log_str lines:  {len(log_lst)}\n'   # количество строк в файле
+      f'RE_PARSE lines: {len(parse_lst)}')  # количество элементов в результате парсинга
+
+# ВЫВОДИМ СТРОКИ, КОТОРЫЕ НЕ УДАЛОСЬ РАСПАРСИТЬ ЕСЛИ ОНИ ЕСТЬ
+for line in log_str.split('\n'):
+    parse_str = re.findall(RE_PARSE, line)
+    if not parse_str:
+        print(f'Строка которую не удалось распарсить: ({line})')
