@@ -19,3 +19,24 @@ r"""
         ValueError: wrong val -5
     замаскировать работу декоратора
 """
+import re
+
+
+def val_checker(verify):
+    def _cube(func):
+        def cube(number):
+            if not verify(number):
+                raise ValueError(f'wrong val {number}')
+            return func(number)
+        return cube
+    return _cube
+
+
+@val_checker(lambda x: x > 0)
+def calc_cube(x):
+    return x ** 3
+
+
+_value = int(''.join(re.findall(r'[-+]?[-+0-9]+', input('Введите положительное число для возведения в куб: '))))
+result = calc_cube(_value)
+print(result)
