@@ -15,7 +15,7 @@ with open('nginx_logs.txt', 'r', encoding='utf-8') as f:
 
 # ПАРСИМ
 # Линк на регулярку https://regex101.com/r/gDdBLg/1
-RE_PARSE = (r'^(\b.*\b).*\[(.+)].*\"([A-Z]+) +(/.+?)\s.*?\" (\d+) (\d+).*$|^$')                         # регулярка для парсинга
+RE_PARSE = r'^(\b.+\b).*\[(.+)].*\"([A-Z]+) +(/.+?)\s.*?\" (\d+?) (\d+?) .*$|^$'    # регулярка для парсинга
 parse_lst = list(re.findall(RE_PARSE, log_str, re.MULTILINE))
 
 # ВЫВОДИМ РЕЗУЛЬТАТ
